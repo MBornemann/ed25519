@@ -53,4 +53,17 @@ public final class PublicKey {
         
         return PublicKey(unchecked: pub)
     }
+    
+    public static func derivePublicKey(bytes: [UInt8]) -> [UInt8] {
+        var secretBytes = bytes
+        var pubBytes = [UInt8](repeating: 0, count: 32)
+        
+        secretBytes.withUnsafeMutableBufferPointer { priv in
+            pubBytes.withUnsafeMutableBufferPointer { pub in
+                ed25519_extract_public_key(pub.baseAddress, priv.baseAddress)
+            }
+        }
+        
+        return pubBytes
+    }
 }
